@@ -11,6 +11,7 @@
     "react-color": "^2.18.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
+    "react-toastify": "^6.0.8",
     "three": "^0.119.1",
     "three-obj-mtl-loader": "^1.0.3",
     "three-orbitcontrols": "^2.110.3"

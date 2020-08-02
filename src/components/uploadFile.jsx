@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { toast } from "react-toastify";
 
 class UploadFile extends Component {
   state = {
@@ -9,9 +10,21 @@ class UploadFile extends Component {
     event.preventDefault();
 
     const file = event.target.files[0];
-    if (file === undefined) return;
+    if (file === undefined) {
+      toast.dismiss();
+      toast.error("Invalid file!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    }
     this.setState({
       fileName: file.name,
+    });
+
+    toast.info("Loading OBJ Model...", {
+      position: toast.POSITION.TOP_CENTER,
+      autoClose: 10000,
+      closeOnClick: false,
     });
 
     const reader = new FileReader();

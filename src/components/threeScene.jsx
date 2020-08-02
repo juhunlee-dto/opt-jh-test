@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-obj-mtl-loader";
 import OrbitControls from "three-orbitcontrols";
+import { toast } from "react-toastify";
 
 class ThreeScene extends Component {
   componentDidUpdate(prevProps) {
@@ -48,6 +49,7 @@ class ThreeScene extends Component {
   //Handle Model
   changeColor = (color) => {
     const material = new THREE.MeshPhongMaterial({ color: color });
+    material.side = THREE.DoubleSide;
 
     this.scene.children.forEach((o) => {
       if (o.name === "imported") {
@@ -84,13 +86,22 @@ class ThreeScene extends Component {
       let objGroup = objLoader.parse(data);
       objGroup.children.forEach((o) => {
         o.material = material;
+        o.material.side = THREE.DoubleSide;
       });
 
       objGroup.name = "imported";
       this.scene.add(objGroup);
       this.fitCameraToObjects(objGroup.children);
+      toast.dismiss();
+      toast.success("The OBJ model has been loaded!", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 1500,
+      });
     } catch {
-      console.log("not valid");
+      toast.dismiss();
+      toast.error("Loading OBJ model has failed...", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     }
   };
 
@@ -151,11 +162,11 @@ class ThreeScene extends Component {
 
   addLights = () => {
     this.ambientLight = new THREE.AmbientLight(0x101010);
-    this.ambientLight.intensity = 4.0;
+    this.ambientLight.intensity = 6.0;
     this.scene.add(this.ambientLight);
 
     this.directionalLight = new THREE.DirectionalLight(0x101010);
-    this.directionalLight.intensity = 12.0;
+    this.directionalLight.intensity = 15.0;
     this.directionalLight.position.y = 10;
     //this.directionalLight1.position.set(-100, -50, 100);
 
