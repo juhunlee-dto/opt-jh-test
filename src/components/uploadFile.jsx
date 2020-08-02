@@ -9,6 +9,7 @@ class UploadFile extends Component {
     event.preventDefault();
 
     const file = event.target.files[0];
+    if (file === undefined) return;
     this.setState({
       fileName: file.name,
     });
@@ -27,6 +28,7 @@ class UploadFile extends Component {
         <div className="custom-file">
           <input
             type="file"
+            accept=".obj"
             className="custom-file-input"
             id="inputGroupFile"
             onChange={this.handleChange.bind(this)}

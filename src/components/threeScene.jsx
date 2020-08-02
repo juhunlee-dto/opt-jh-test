@@ -1,12 +1,19 @@
 import React, { Component } from "react";
 import * as THREE from "three";
-import { MTLLoader, OBJLoader } from "three-obj-mtl-loader";
+import { OBJLoader } from "three-obj-mtl-loader";
 import OrbitControls from "three-orbitcontrols";
 
 class ThreeScene extends Component {
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const data = this.props.dataFromFile;
-    this.loadModel(data);
+    if (data !== prevProps.dataFromFile) {
+      this.loadModel(data);
+    }
+
+    const color = this.props.diffuseColor;
+    if (color !== prevProps.diffuseColor) {
+      this.changeColor(color);
+    }
   }
 
   componentDidMount() {
@@ -39,6 +46,20 @@ class ThreeScene extends Component {
   };
 
   //Handle Model
+  changeColor = (color) => {
+    const material = new THREE.MeshPhongMaterial({ color: color });
+
+    this.scene.children.forEach((o) => {
+      if (o.name === "imported") {
+        o.children.forEach((c) => {
+          console.log(color);
+          c.material.dispose();
+          c.material = material; //.color.setHex(color);
+        });
+      }
+    });
+  };
+
   removeModel = () => {
     this.scene.children.forEach((o) => {
       if (o.name === "imported") {
@@ -55,14 +76,22 @@ class ThreeScene extends Component {
     this.removeModel();
     let objLoader = new OBJLoader();
 
-    const material2 = new THREE.MeshPhongMaterial({ color: 0xffff00 });
-    let objGroup = objLoader.parse(data);
-    objGroup.children.forEach((o) => {
-      o.material = material2;
+    const material = new THREE.MeshPhongMaterial({
+      color: this.props.diffuseColor,
     });
-    objGroup.name = "imported";
-    this.scene.add(objGroup);
-    this.fitCameraToObjects(objGroup.children);
+
+    try {
+      let objGroup = objLoader.parse(data);
+      objGroup.children.forEach((o) => {
+        o.material = material;
+      });
+
+      objGroup.name = "imported";
+      this.scene.add(objGroup);
+      this.fitCameraToObjects(objGroup.children);
+    } catch {
+      console.log("not valid");
+    }
   };
 
   //Set three.js scene
