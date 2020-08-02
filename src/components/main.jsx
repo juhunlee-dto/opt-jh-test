@@ -19,7 +19,7 @@ class MainPage extends Component {
   render() {
     return (
       <React.Fragment>
-        <ThreeScene dataFromFile={this.state.data}></ThreeScene>
+        {/* <ThreeScene dataFromFile={this.state.data}></ThreeScene> */}
         <UploadFile
           handleDataFromFile={this.loadDataFromFile.bind(this)}
         ></UploadFile>
